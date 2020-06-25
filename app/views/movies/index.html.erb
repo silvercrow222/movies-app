@@ -1,2 +1,8 @@
 <a href="/movies/new">登録</a>
+
+<% @movies.each do |movie| %>
+  <%= movie.name %>
+  <%= link_to '評価', edit_movie_path(movie.id), method: :get %>
+<% end %>
+
 <a href="/movies/search">検索</a>
