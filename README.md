@@ -66,7 +66,7 @@ Things you may want to cover:
 - has_many :movies
 - has_many :end_movies
 
-## genre_movies table
+## end_movies table
 |Column|Type|Options|
 |------|----|-------|
 |movie_id|integer|null: false, foreign_key: true|
@@ -84,7 +84,7 @@ Things you may want to cover:
 - has_many :movies
 - has_many :era_movies
 
-## genre_movies table
+## era_movies table
 |Column|Type|Options|
 |------|----|-------|
 |movie_id|integer|null: false, foreign_key: true|
