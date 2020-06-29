@@ -1,8 +1,16 @@
 <a href="/movies/new">登録</a>
 
-<% @movies.each do |movie| %>
-  <%= movie.name %>
-  <%= link_to '評価', edit_movie_path(movie.id), method: :get %>
+<% if @movies %>
+  <% @movies.each do |movie| %>
+    <%= movie.movie.name %>
+    <%= link_to '評価', edit_movie_path(movie.id), method: :get %>
+  <% end %>
+<% else %>
+  <% @movies_all.each do |movie| %>
+    <%= movie.name %>
+    <%= link_to '評価', edit_movie_path(movie.id), method: :get %>
+  <% end %>
 <% end %>
 
 <a href="/movies/search">検索</a>
+

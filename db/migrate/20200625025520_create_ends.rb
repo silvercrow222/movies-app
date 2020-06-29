@@ -1,8 +1,8 @@
 class CreateEnds < ActiveRecord::Migration[6.0]
   def change
     create_table :ends do |t|
-      t.string :attribute, null: false
-      t.timestamps
+      t.string :attribute_end, null: false
+      t.float :point_end
     end
   end
 end

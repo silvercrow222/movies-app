@@ -15,46 +15,34 @@ ActiveRecord::Schema.define(version: 2020_06_25_025547) do
   create_table "end_movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "movie_id"
     t.bigint "end_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.index ["end_id"], name: "index_end_movies_on_end_id"
     t.index ["movie_id"], name: "index_end_movies_on_movie_id"
   end
 
   create_table "ends", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "attribute", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.string "attribute_end", null: false
   end
 
   create_table "era_movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "movie_id"
     t.bigint "era_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.index ["era_id"], name: "index_era_movies_on_era_id"
     t.index ["movie_id"], name: "index_era_movies_on_movie_id"
   end
 
   create_table "eras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "attribute", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.string "attribute_era", null: false
   end
 
   create_table "genre_movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "movie_id"
     t.bigint "genre_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.index ["genre_id"], name: "index_genre_movies_on_genre_id"
     t.index ["movie_id"], name: "index_genre_movies_on_movie_id"
   end
 
   create_table "genres", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
-    t.string "attribute", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.string "attribute_genre", null: false
   end
 
   create_table "movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
