@@ -158,6 +158,4 @@ class MoviesController < ApplicationController
   def movie_params
     params.require(:movie).permit(:name, :details, :evaluation)
   end
-  def tag_points
-  end
 end
