@@ -1,30 +1,10 @@
-# README
+# What
+Make the application to search for movies. It's base is often search application. Additionally, add original evaluation system into it.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+# About
+Sorry, this application is in the middle of been making. I kindly ask for your understanding.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-# DB設計
-
+# Database
 ## movies table
 |Column|Type|Options|
 |------|----|-------|
@@ -32,11 +12,11 @@ Things you may want to cover:
 |details|text||
 |evaluation|float||
 ### association
-- has_many :genres
+- has_many :genres, thorugh: :genre_movies
 - has_many :genre_movies
-- has_many :ends
+- has_many :ends, thorugh: :end_movies
 - has_many :end_movies
-- has_many :eras
+- has_many :eras, thorugh: :era_movies
 - has_many :era_movies
 
 
@@ -45,7 +25,7 @@ Things you may want to cover:
 |------|----|-------|
 |attribute|string|null: false|
 ### association
-- has_many :movies
+- has_many :movies, thorugh: :genre_movies
 - has_many :genre_movies
 
 ## genre_movies table
@@ -63,7 +43,7 @@ Things you may want to cover:
 |------|----|-------|
 |attribute|string|null: false|
 ### association
-- has_many :movies
+- has_many :movies, thorugh: :end_movies
 - has_many :end_movies
 
 ## end_movies table
@@ -81,7 +61,7 @@ Things you may want to cover:
 |------|----|-------|
 |attribute|string|null: false|
 ### association
-- has_many :movies
+- has_many :movies, thorugh: :era_movies
 - has_many :era_movies
 
 ## era_movies table
