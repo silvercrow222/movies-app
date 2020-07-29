@@ -1,0 +1,11 @@
+= form_with(url: finely_movies_path, local: true, method: :get) do |f|
+  = f.collection_check_boxes :genre_ids, Genre.all, :id, :attribute_genre
+  = f.collection_check_boxes :end_ids, End.all, :id, :attribute_end
+  = f.collection_check_boxes :era_ids, Era.all, :id, :attribute_era
+  = f.submit 'SEND'
+- if @movies_name
+  - @movies_name.each do |name|
+    = name
+- else
+  - @movieAll.each do |movie|
+    = movie.name
