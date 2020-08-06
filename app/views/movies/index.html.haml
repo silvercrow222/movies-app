@@ -1,10 +1,5 @@
-%a{:href => "/movies/new"} 登録
-- if @movies
-  - @movies.each do |movie|
-    = movie.movie.name
-    = link_to '評価', edit_movie_path(movie.id), method: :get
-- else
-  - @movies_all.each do |movie|
-    = movie.name
-    = link_to '評価', edit_movie_path(movie.id), method: :get
-%a{:href => "/movies/search"} 検索
+= link_to '登録', new_movie_path
+- @movies.each do |movie|
+  = movie.name
+  = link_to '評価', edit_movie_path(movie.id)
+= link_to '検索', search_movies_path

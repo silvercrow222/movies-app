@@ -3,9 +3,6 @@
   = f.collection_check_boxes :end_ids, End.all, :id, :attribute_end
   = f.collection_check_boxes :era_ids, Era.all, :id, :attribute_era
   = f.submit 'SEND'
-- if @movies_name
-  - @movies_name.each do |name|
-    = name
-- else
-  - @movieAll.each do |movie|
-    = movie.name
+
+- @movies.each do |movie|
+  = movie.name

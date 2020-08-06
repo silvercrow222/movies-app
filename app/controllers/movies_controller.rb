@@ -2,11 +2,13 @@ class MoviesController < ApplicationController
   def index
     if params[:genre_id]
       @genre = Genre.find(params[:genre_id])
-    end
-    if @genre
-      @movies = @genre.genre_movies.all 
+      movies = @genre.genre_movies.all
+      @movies = []
+      movies.each do |movie|
+        @movies.push(movie.movie)
+      end
     else
-      @moviesAll = Movie.all
+      @movies = Movie.all
     end
 
     Genre.all.length.times do |n|
@@ -67,6 +69,9 @@ class MoviesController < ApplicationController
       end
     end
   end
+
+
+
   def new
     @movie = Movie.new
   end
@@ -82,75 +87,28 @@ class MoviesController < ApplicationController
   end
   def search
   end
+
+
+
   def finely
-    @movieAll = Movie.all
+    @movies = Movie.all
     if params[:genre_ids]
-      @movies1 = []
-      Movie.all.each do |movie|
-        strings = movie.genre_movies.all
-        strings.each do |str|
-          if params[:genre_ids].include?("#{str.genre.id}")
-            @movies1 += strings
+      movies_genre, movies_end, movies_era, movies = [], [], [], []
+      attributes = ["genre", "end", "era"]
+      attributes.each do |string|
+        eval(
+        "params[:#{string}_ids].each do |id|
+          #{string.capitalize}Movie.all.each do |middle|
+            if middle.#{string}_id == id.to_i
+              movies_#{string}.push(@movies.find(middle.movie_id))
+            end
           end
-        end
+        end")
       end
-    end
-    if params[:end_ids]
-      @movies2 = []
-      Movie.all.each do |movie|
-        strings = movie.end_movies.all
-        strings.each do |str|
-          if params[:end_ids].include?("#{str.end.id}")
-            @movies2 += strings
-          end
-        end
+      @movies.each do |movie|
+        movies.push(movie) if movies_genre.include?(movie) && movies_end.include?(movie) && movies_era.include?(movie)
       end
-    end
-    if params[:era_ids]
-      @movies3 = []
-      Movie.all.each do |movie|
-        strings = movie.era_movies.all
-        strings.each do |str|
-          if params[:era_ids].include?("#{str.era.id}")
-            @movies3 += strings
-          end
-        end
-      end
-    end
-
-    if params[:genre_ids]
-      @movie_ids1 = []
-      @movies1.each do |movie1|
-        @movie_ids1.push("#{movie1.movie_id}")
-      end
-      @movie_ids2 = []
-      @movies2.each do |movie2|
-        @movie_ids2.push("#{movie2.movie_id}")
-      end
-      @movie_ids3 = []
-      @movies3.each do |movie3|
-        @movie_ids3.push("#{movie3.movie_id}")
-      end
-
-      movies = []
-      @movies = []
-      @movie_ids1.each do |id|
-        if @movie_ids2.include?("#{id}")
-          movies.push("#{id}")
-        end
-      end
-      movies.each do |id|
-        if @movie_ids3.include?("#{id}")
-          @movies.push("#{id}")
-        end
-      end
-
-      @movies_name = []
-      Movie.all.each do |movie|
-        if @movies.include?("#{movie.id}")
-          @movies_name.push("#{movie.name}")
-        end
-      end
+      @movies = movies
     end
   end
 
