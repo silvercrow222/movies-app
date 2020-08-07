@@ -21,6 +21,7 @@ class MoviesController < ApplicationController
 
   def edit
     @movie = Movie.find(params[:id])
+    @movie.evaluations.new
   end
 
   def update
@@ -55,6 +56,6 @@ class MoviesController < ApplicationController
 
   private
   def movie_params
-    params.require(:movie).permit(:name, :details, :evaluation)
+    params.require(:movie).permit(:name, :details, evaluations_attributes: [:value, :user_id])
   end
 end

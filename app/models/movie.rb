@@ -5,4 +5,7 @@ class Movie < ApplicationRecord
   has_many :end_movies
   has_many :eras, through: :era_movies
   has_many :era_movies
+  has_many :evaluations
+
+  accepts_nested_attributes_for :evaluations
 end
