@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2020_06_25_025547) do
 
   create_table "ends", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "attribute_end", null: false
+    t.float "point_end"
   end
 
   create_table "era_movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -32,6 +33,7 @@ ActiveRecord::Schema.define(version: 2020_06_25_025547) do
 
   create_table "eras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "attribute_era", null: false
+    t.float "point_era"
   end
 
   create_table "genre_movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -43,6 +45,7 @@ ActiveRecord::Schema.define(version: 2020_06_25_025547) do
 
   create_table "genres", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "attribute_genre", null: false
+    t.float "point_genre"
   end
 
   create_table "movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
