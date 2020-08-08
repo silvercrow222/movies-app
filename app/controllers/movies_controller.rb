@@ -48,10 +48,9 @@ class MoviesController < ApplicationController
       attributes.each do |string|
         eval(
         "params[:#{string}_ids].each do |id|
-          #{string.capitalize}Movie.all.each do |middle|
-            if middle.#{string}_id == id.to_i
-              movies_#{string}.push(@movies.find(middle.movie_id))
-            end
+          nums = #{string.capitalize}Movie.all.includes(:#{string}, :movie)
+          nums.where(#{string}_id: id.to_i).each do |num|
+            movies_#{string}.push(@movies.find(num.movie_id))
           end
         end")
       end
