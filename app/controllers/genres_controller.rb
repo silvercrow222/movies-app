@@ -1,14 +1,15 @@
 class GenresController < ApplicationController
-  before_action :redirect
+  before_action :redirect, only: [:new, :create]
 
   def index
     @genres = Genre.all
   end
+  
   def new
     @genre = Genre.new
   end
   def create
-    Genre.create(genre_params)
+    redirect_to action: :new if Genre.create(genre_params)
   end
 
   private

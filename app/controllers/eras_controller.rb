@@ -5,7 +5,7 @@ class ErasController < ApplicationController
     @era = Era.new
   end
   def create
-    Era.create(era_params)
+    redirect_to action: :new if Era.create(era_params)
   end
 
   private

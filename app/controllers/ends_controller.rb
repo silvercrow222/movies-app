@@ -5,7 +5,7 @@ class EndsController < ApplicationController
     @end = End.new
   end
   def create
-    End.create(end_params)
+    redirect_to action: :new if End.create(end_params)
   end
 
   private

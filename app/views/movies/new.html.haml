@@ -1,4 +1,10 @@
 = form_with(model: @movie, local: true) do |f|
   = f.text_field :name, placeholder: 'name'
   = f.text_area :details, placeholder: 'details'
+  = f.fields_for :genre_movies, @movie.genre_movies.new do |a|
+    = a.number_field :genre_id, placeholder: 'genre'
+  = f.fields_for :end_movies, @movie.end_movies.new do |a|
+    = a.number_field :end_id, placeholder: 'end'
+  = f.fields_for :era_movies, @movie.era_movies.new do |a|
+    = a.number_field :era_id, placeholder: 'era'
   = f.submit 'SEND'

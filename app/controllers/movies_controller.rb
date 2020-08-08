@@ -18,7 +18,7 @@ class MoviesController < ApplicationController
   end
 
   def create
-    redirect_to new_movies_path if Movie.create(movie_params)
+    redirect_to new_movie_path if Movie.create(movie_params)
   end
 
   def edit
@@ -64,7 +64,8 @@ class MoviesController < ApplicationController
 
   private
   def movie_params
-    params.require(:movie).permit(:name, :details, evaluations_attributes: [:value, :user_id])
+    params.require(:movie).permit(:name, :details, evaluations_attributes: [:value, :user_id],
+    genre_movies_attributes: [:genre_id], end_movies_attributes: [:end_id], era_movies_attributes: [:era_id]) 
   end
 
   def redirect
