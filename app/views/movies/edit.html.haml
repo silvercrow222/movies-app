@@ -1,4 +1,5 @@
 = form_with(model: @movie, local: true) do |f|
-  = f.fields_for :evaluations do |e|
+  = f.fields_for :evaluations, @evaluation do |e|
     = e.number_field :value, placeholder: 'evaluation'
+    = e.number_field :user_id, value: "#{current_user.id}"
   = f.submit 'SEND'

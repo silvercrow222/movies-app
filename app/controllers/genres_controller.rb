@@ -1,4 +1,6 @@
 class GenresController < ApplicationController
+  before_action :redirect
+
   def index
     @genres = Genre.all
   end
@@ -12,5 +14,8 @@ class GenresController < ApplicationController
   private
   def genre_params
     params.require(:genre).permit(:attribute_genre)
-  end 
+  end
+  def redirect
+    redirect_to root_path unless current_user.id == 1
+  end
 end

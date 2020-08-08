@@ -1,4 +1,6 @@
 class MoviesController < ApplicationController
+  before_action :redirect, only: [:new, :create]
+
   def index
     if params[:genre_id]
       @genre = Genre.find(params[:genre_id])
@@ -16,17 +18,23 @@ class MoviesController < ApplicationController
   end
 
   def create
-    Movie.create(movie_params)
+    redirect_to new_movies_path if Movie.create(movie_params)
   end
 
   def edit
     @movie = Movie.find(params[:id])
-    @movie.evaluations.new
+    if @evaluation = Evaluation.find_by(user_id: current_user.id)
+    else
+      @evaluation = @movie.evaluations.new
+    end
   end
 
   def update
     movie = Movie.find(params[:id])
-    movie.update(movie_params)
+    if evaluation = movie.evaluations.find_by(user_id: current_user.id)
+      evaluation.delete
+    end
+    redirect_to root_path if movie.update(movie_params)
   end
 
   def search
@@ -57,5 +65,9 @@ class MoviesController < ApplicationController
   private
   def movie_params
     params.require(:movie).permit(:name, :details, evaluations_attributes: [:value, :user_id])
+  end
+
+  def redirect
+    redirect_to root_path unless current_user.id == 1
   end
 end
