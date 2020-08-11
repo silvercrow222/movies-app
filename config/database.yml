@@ -49,6 +49,7 @@ test:
 #
 production:
   <<: *default
+  database: movies_app_production
   adapter: postgresql
   encoding: unicode
   pool: 5
