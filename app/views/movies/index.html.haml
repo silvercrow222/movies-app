@@ -1,10 +1,17 @@
-%a{:href => "/movies/new"} 登録
-- if @movies
+- if current_user && current_user.id == 1
+  = link_to '映画登録', new_movie_path
+  = link_to 'ジャンル登録', new_genre_path
+  = link_to 'エンド登録', new_end_path
+  = link_to '時代登録', new_era_path
+
+%br/
+- if user_signed_in?
   - @movies.each do |movie|
-    = movie.movie.name
-    = link_to '評価', edit_movie_path(movie.id), method: :get
-- else
-  - @movies_all.each do |movie|
     = movie.name
-    = link_to '評価', edit_movie_path(movie.id), method: :get
-%a{:href => "/movies/search"} 検索
+    = link_to '評価', edit_movie_path(movie.id)
+  %br/
+  = link_to '検索', search_movies_path
+  = link_to 'ログアウト', destroy_user_session_path, method: :delete
+- else
+  = link_to '新規登録', new_user_registration_path
+  = link_to 'ログイン', new_user_session_path

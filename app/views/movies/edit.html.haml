@@ -1,3 +1,21 @@
 = form_with(model: @movie, local: true) do |f|
-  = f.number_field :evaluation, placeholder: 'evaluation'
+  = f.fields_for :evaluations, @evaluation do |e|
+    = e.number_field :value, placeholder: 'evaluation'
+    = e.number_field :user_id, value: "#{current_user.id}"
   = f.submit 'SEND'
+
+- if current_user.id == 1
+  = form_with(model: @movie, local: true) do |f|
+    = f.fields_for :genre_movies, @movie.genre_movies.new do |a|
+      = a.number_field :genre_id, placeholder: 'genre'
+    = f.submit 'SEND'
+  = form_with(model: @movie, local: true) do |f|
+    = f.fields_for :end_movies, @movie.end_movies.new do |a|
+      = a.number_field :end_id, placeholder: 'end'
+    = f.submit 'SEND'
+  = form_with(model: @movie, local: true) do |f|
+    = f.fields_for :era_movies, @movie.era_movies.new do |a|
+      = a.number_field :era_id, placeholder: 'era'
+    = f.submit 'SEND'
+  %br/
+  = render partial: 'list'

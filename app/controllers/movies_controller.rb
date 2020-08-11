@@ -1,161 +1,140 @@
 class MoviesController < ApplicationController
+  before_action :redirect, only: [:new, :create]
+
   def index
     if params[:genre_id]
       @genre = Genre.find(params[:genre_id])
-    end
-    if @genre
-      @movies = @genre.genre_movies.all 
+      movies, @movies = @genre.genre_movies.all, []
+      movies.each do |movie|
+        @movies.push(movie.movie)
+      end
     else
-      @moviesAll = Movie.all
-    end
-
-    Genre.all.length.times do |n|
-      genre_point = 0
-      i = 0
-      genres = Genre.find(n + 1).genre_movies
-      genres.each do |genre|
-        if genre.movie.evaluation != nil
-          genre_point += genre.movie.evaluation
-          i += 1
-        end
-      end
-      if genre_point != 0
-        genre_point /= i
-      end
-      instance_variable_set("@genre#{n + 1}_point", genre_point)
-      Genre.find(n + 1).update(point_genre: genre_point)
-    end
-    End.all.length.times do |n|
-      end_point = 0
-      i = 0
-    ends = End.find(n + 1).end_movies
-    ends.each do |end_|
-        if end_.movie.evaluation != nil
-          end_point += end_.movie.evaluation
-          i += 1
-        end
-      end
-      if end_point != 0
-        end_point /= i
-      end
-      instance_variable_set("@end#{n + 1}_point", end_point)
-      End.find(n + 1).update(point_end: end_point)
-    end
-    Era.all.length.times do |n|
-      era_point = 0
-      i = 0
-      eras = Era.find(n + 1).era_movies
-      eras.each do |era|
-        if era.movie.evaluation != nil
-          era_point += era.movie.evaluation
-          i += 1
-        end
-      end
-      if era_point != 0
-        era_point /= i
-      end
-      instance_variable_set("@era#{n + 1}_point", era_point)
-      Era.find(n + 1).update(point_era: era_point)
-    end
-
-    if @moviesAll
-      @movies_all = []
-      Genre.all.order(point_genre: "DESC").each do |genre|
-        genre.genre_movies.each do |table|
-          @movies_all.push(table.movie)
-        end
-      end
+      @movies = Movie.all
+      recommended_movies if user_signed_in?
     end
   end
+
   def new
     @movie = Movie.new
+    @genres, @ends, @eras = Genre.all, End.all, Era.all
   end
+
   def create
-    Movie.create(movie_params)
+    redirect_to new_movie_path if Movie.create(movie_params)
   end
+
   def edit
     @movie = Movie.find(params[:id])
+    @genres, @ends, @eras = Genre.all, End.all, Era.all
+    if @evaluation = Evaluation.where(user_id: current_user.id).find_by(movie_id: params[:id])
+    else
+      @evaluation = @movie.evaluations.new
+    end
   end
+
   def update
     movie = Movie.find(params[:id])
-    movie.update(movie_params)
+    if evaluation = movie.evaluations.find_by(user_id: current_user.id)
+      evaluation.delete
+    end
+    if current_user.id == 1 && movie.update(movie_params)
+      redirect_to edit_movie_path
+    elsif movie.update(movie_params)
+      redirect_to root_path 
+    else
+      render :edit
+    end
   end
+
   def search
   end
+
   def finely
-    @movieAll = Movie.all
+    @movies = Movie.all
     if params[:genre_ids]
-      @movies1 = []
-      Movie.all.each do |movie|
-        strings = movie.genre_movies.all
-        strings.each do |str|
-          if params[:genre_ids].include?("#{str.genre.id}")
-            @movies1 += strings
+      movies_genre, movies_era, movies = [], [], []
+      attributes = ["genre", "era"]
+      attributes.each do |string|
+        eval(
+        "params[:#{string}_ids].each do |id|
+          nums = #{string.capitalize}Movie.all.includes(:#{string}, :movie)
+          nums.where(#{string}_id: id.to_i).each do |num|
+            movies_#{string}.push(@movies.find(num.movie_id))
           end
-        end
+        end")
       end
-    end
-    if params[:end_ids]
-      @movies2 = []
-      Movie.all.each do |movie|
-        strings = movie.end_movies.all
-        strings.each do |str|
-          if params[:end_ids].include?("#{str.end.id}")
-            @movies2 += strings
-          end
-        end
+      @movies.each do |movie|
+        movies.push(movie) if movies_genre.include?(movie) && movies_era.include?(movie)
       end
-    end
-    if params[:era_ids]
-      @movies3 = []
-      Movie.all.each do |movie|
-        strings = movie.era_movies.all
-        strings.each do |str|
-          if params[:era_ids].include?("#{str.era.id}")
-            @movies3 += strings
-          end
-        end
-      end
-    end
-
-    if params[:genre_ids]
-      @movie_ids1 = []
-      @movies1.each do |movie1|
-        @movie_ids1.push("#{movie1.movie_id}")
-      end
-      @movie_ids2 = []
-      @movies2.each do |movie2|
-        @movie_ids2.push("#{movie2.movie_id}")
-      end
-      @movie_ids3 = []
-      @movies3.each do |movie3|
-        @movie_ids3.push("#{movie3.movie_id}")
-      end
-
-      movies = []
-      @movies = []
-      @movie_ids1.each do |id|
-        if @movie_ids2.include?("#{id}")
-          movies.push("#{id}")
-        end
-      end
-      movies.each do |id|
-        if @movie_ids3.include?("#{id}")
-          @movies.push("#{id}")
-        end
-      end
-
-      @movies_name = []
-      Movie.all.each do |movie|
-        if @movies.include?("#{movie.id}")
-          @movies_name.push("#{movie.name}")
-        end
-      end
+      @movies = movies
     end
   end
 
   private
   def movie_params
-    params.require(:movie).permit(:name, :details, :evaluation)
+    params.require(:movie).permit(:name, :details, evaluations_attributes: [:value, :user_id],
+    genre_movies_attributes: [:genre_id], end_movies_attributes: [:end_id], era_movies_attributes: [:era_id]) 
+  end
+
+  def redirect
+    redirect_to root_path unless current_user.id == 1
+  end
+
+  def recommended_movies
+    @movies.each do |movie|
+      movie.evaluations.where(user_id: current_user.id).each do |evaluation|
+        eval(
+        "@movie#{movie.id}_eva = evaluation.value")
+      end
+    end
+
+    Genre.all.length.times do |n|
+      genre_point, i = 3, 1
+      Genre.find(n + 1).genre_movies.each do |middle|
+        if eval("@movie#{middle.movie_id}_eva") != nil
+          genre_point += eval("@movie#{middle.movie_id}_eva")
+          i += 1
+        end
+      end
+      genre_point /= i
+      Genre.find(n + 1).update(point_genre: genre_point)
+    end
+    End.all.length.times do |n|
+      end_point, i = 3, 1
+      End.find(n + 1).end_movies.each do |middle|
+        if eval("@movie#{middle.movie_id}_eva") != nil
+          end_point += eval("@movie#{middle.movie_id}_eva")
+          i += 1
+        end
+      end
+      end_point /= i
+      End.find(n + 1).update(point_end: end_point)
+    end
+    Era.all.length.times do |n|
+      era_point, i = 3, 1
+      Era.find(n + 1).era_movies.each do |middle|
+        if eval("@movie#{middle.movie_id}_eva") != nil
+          era_point += eval("@movie#{middle.movie_id}_eva")
+          i += 1
+        end
+      end
+      era_point /= i
+      Era.find(n + 1).update(point_era: era_point)
+    end
+
+    @movies.each do |movie|
+      temp_point, i = 3, 1
+      attributes = ["genre", "end", "era"]
+      attributes.each do |string|
+        eval(
+        "movie.#{string}_movies.each do |middle|
+          temp_point += middle.#{string}.point_#{string}
+          i += 1
+        end")
+      end
+      temp_point /= i
+      movie.update(point_temp: temp_point)
+    end
+    @movies = @movies.order(point_temp: :desc)
   end
 end

@@ -3,7 +3,7 @@ class CreateMovies < ActiveRecord::Migration[6.0]
     create_table :movies do |t|
       t.string :name, null: false
       t.text :details
-      t.float :evaluation
+      t.float :point_temp
       t.timestamps
     end
   end

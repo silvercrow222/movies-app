@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_25_025547) do
+ActiveRecord::Schema.define(version: 2020_08_07_045018) do
 
   create_table "end_movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "movie_id"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2020_06_25_025547) do
 
   create_table "ends", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "attribute_end", null: false
+    t.float "point_end"
   end
 
   create_table "era_movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -32,6 +33,17 @@ ActiveRecord::Schema.define(version: 2020_06_25_025547) do
 
   create_table "eras", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "attribute_era", null: false
+    t.float "point_era"
+  end
+
+  create_table "evaluations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.float "value"
+    t.bigint "user_id"
+    t.bigint "movie_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["movie_id"], name: "index_evaluations_on_movie_id"
+    t.index ["user_id"], name: "index_evaluations_on_user_id"
   end
 
   create_table "genre_movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -43,12 +55,24 @@ ActiveRecord::Schema.define(version: 2020_06_25_025547) do
 
   create_table "genres", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "attribute_genre", null: false
+    t.float "point_genre"
   end
 
   create_table "movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
     t.text "details"
-    t.float "evaluation"
+    t.float "point_temp"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -57,6 +81,8 @@ ActiveRecord::Schema.define(version: 2020_06_25_025547) do
   add_foreign_key "end_movies", "movies"
   add_foreign_key "era_movies", "eras"
   add_foreign_key "era_movies", "movies"
+  add_foreign_key "evaluations", "movies"
+  add_foreign_key "evaluations", "users"
   add_foreign_key "genre_movies", "genres"
   add_foreign_key "genre_movies", "movies"
 end
