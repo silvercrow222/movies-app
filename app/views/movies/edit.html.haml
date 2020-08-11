@@ -17,3 +17,5 @@
     = f.fields_for :era_movies, @movie.era_movies.new do |a|
       = a.number_field :era_id, placeholder: 'era'
     = f.submit 'SEND'
+  %br/
+  = render partial: 'list'

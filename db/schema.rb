@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 2020_08_07_045018) do
   create_table "movies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name", null: false
     t.text "details"
+    t.float "point_temp"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
